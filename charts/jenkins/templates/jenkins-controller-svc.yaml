@@ -35,8 +35,15 @@ spec:
 {{- range $index, $port := .Values.controller.extraPorts }}
     - port: {{ $port.port }}
       name: {{ $port.name }}
+      {{- if $port.targetPort }}
+      targetPort: {{ $port.targetPort }}
+      {{- else }}
       targetPort: {{ $port.port }}
+      {{- end -}}
 {{- end }}
+  {{- if .Values.controller.publishNotReadyAddresses }}
+  publishNotReadyAddresses: true
+  {{- end }}
   selector:
     "app.kubernetes.io/component": "{{ .Values.controller.componentName }}"
     "app.kubernetes.io/instance": "{{ .Release.Name }}"
